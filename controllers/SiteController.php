@@ -2,46 +2,29 @@
 
 namespace app\controllers;
 
-use Yii;
-use yii\filters\AccessControl;
+use yii\web\Session;
 use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
+use yii\helpers\ArrayHelper;
+use app\forms\CreatePostForm;
+use app\common\post\services\PostService;
+use app\common\post\repositories\PostRepository;
 
 class SiteController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
+    private PostService $postService;
+    private PostRepository $postRepository;
+    private Session $session;
+
+    public function __construct($id, $module, PostService $postService, PostRepository $postRepository, Session $session, $config = [])
     {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
+        parent::__construct($id, $module, $config);
+
+        $this->postService = $postService;
+        $this->postRepository = $postRepository;
+        $this->session = $session;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => [
@@ -49,80 +32,38 @@ class SiteController extends Controller
             ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                'fixedVerifyCode' => null,
             ],
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
     public function actionIndex()
     {
-        return $this->render('index');
-    }
+        $ip = $this->request->getUserIP();
 
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+        $form = new CreatePostForm($this->postRepository);
+        $form->ip = $ip;
+
+        if ($this->request->isPost) {
+            $form->load($this->request->post());
+
+            if ($form->validate()) {
+                $this->postService->add($form->createDto());
+
+                $this->session->setFlash('success', 'The message is published!');
+
+                return  $this->redirect('site/index');
+            }
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
+        $posts = $this->postRepository->getPublishedPosts(10);
+        $ips = ArrayHelper::getColumn($posts, 'ip');
+        $postCounts = $this->postRepository->getPostCounts($ips);
 
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
+        return $this->render('index', [
+            'model' => $form,
+            'posts' => $posts,
+            'postCounts' => $postCounts,
         ]);
-    }
-
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 }

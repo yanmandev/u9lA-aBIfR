@@ -32,7 +32,7 @@ return [
             'identityClass' => 'app\models\User',
         ],
         'request' => [
-            'cookieValidationKey' => 'test',
+            'cookieValidationKey' => getenv('COOKIE_VALIDATION_KEY'),
             'enableCsrfValidation' => false,
             // but if you absolutely need it set cookie domain to localhost
             /*

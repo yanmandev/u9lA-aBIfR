@@ -1,53 +1,57 @@
 <?php
 
-/** @var yii\web\View $this */
+use yii\bootstrap5\Html;
+use yii\captcha\Captcha;
+use yii\bootstrap5\ActiveForm;
+use app\helpers\TextHelper;
+use app\helpers\DateHelper;
+use app\helpers\IpHelper;
 
-$this->title = 'My Yii Application';
+/** @var yii\web\View $this */
+/** @var app\forms\CreatePostForm $model */
+/** @var app\common\post\models\Post[] $posts */
+/** @var array $postCounts */
+
+$this->title = 'Story Post';
 ?>
 <div class="site-index">
-
-    <div class="jumbotron text-center bg-transparent mt-5 mb-5">
-        <h1 class="display-4">Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+    <div class="row">
+        <div class="col-md-8" style="padding-top: 0.5em">
+            <?php foreach ($posts as $post): ?>
+                <div class="card card-default mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $post->name ?></h5>
+                        <p><?= $post->message ?></p>
+                        <p>
+                            <small class="text-muted">
+                                <?= DateHelper::dateForHumans($post->created_at) ?> |
+                                <?= IpHelper::mask($post->ip) ?> |
+                                <?= $postCounts[$post->ip] . ' ' . TextHelper::plural($postCounts[$post->ip], 'posts', 'post', 'posts', 'posts') ?>
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
+        <div class="col-md-4">
+            <?php $form = ActiveForm::begin([
+                'action' => ['index'],
+                'method' => 'post',
+            ]); ?>
 
+            <?= $form->field($model, 'name') ?>
+
+            <?= $form->field($model, 'email') ?>
+
+            <?= $form->field($model, 'message')->textarea() ?>
+
+            <?= $form->field($model, 'captcha')->widget(Captcha::class, []) ?>
+
+            <div class="form-group">
+                <?= Html::submitButton(Yii::t('app', 'Отправить'), ['class' => 'btn btn-primary']) ?>
+            </div>
+
+            <?php ActiveForm::end(); ?>
+        </div>
     </div>
 </div>
