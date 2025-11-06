@@ -32,7 +32,7 @@ class PostRepository
     {
         $posts = Post::find()->addSelect(['COUNT(id) count', 'ip'])->andWhere(['ip' => $ips])->groupBy('ip')->indexBy('ip')->asArray()->all();
 
-        return array_map(fn($item) => $item['count'], $posts);
+        return array_map(fn ($item) => $item['count'], $posts);
     }
 
     /**

@@ -16,7 +16,7 @@ class PostQuery extends \yii\db\ActiveQuery
 
     public function byIp(string $ip): self
     {
-        return $this->andWhere(['ip' =>$ip]);
+        return $this->andWhere(['ip' => $ip]);
     }
 
     public function published(): self

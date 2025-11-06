@@ -38,10 +38,10 @@ $config->setRules([
     'blank_line_before_statement' => [
         'statements' => ['return'],
     ],
-    'ordered_imports' => [
-        'imports_order' => ['class', 'function', 'const'],
-        'sort_algorithm' => 'alpha',
-    ],
+//    'ordered_imports' => [
+//        'imports_order' => ['class', 'function', 'const'],
+//        'sort_algorithm' => 'alpha',
+//    ],
     'no_unused_imports' => true,
     'binary_operator_spaces' => [
         'default' => 'single_space',

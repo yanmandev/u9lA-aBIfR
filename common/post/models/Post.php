@@ -18,8 +18,8 @@ use app\behaviors\TimestampBehavior;
  */
 class Post extends \yii\db\ActiveRecord
 {
-    const STATUS_PUBLISHED = 1;
-    const STATUS_ARCHIVED = 2;
+    public const STATUS_PUBLISHED = 1;
+    public const STATUS_ARCHIVED = 2;
 
     public function isPublished(): bool
     {
