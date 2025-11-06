@@ -2,13 +2,3 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
-
-
-RewriteEngine on
-
-# Если запрошенный файл или директория не существует
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-
-# Отправляем запрос на index.php
-RewriteRule . index.php [L]

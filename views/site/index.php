@@ -48,7 +48,7 @@ $this->title = 'Story Post';
             <?= $form->field($model, 'captcha')->widget(Captcha::class, []) ?>
 
             <div class="form-group">
-                <?= Html::submitButton(Yii::t('app', 'Отправить'), ['class' => 'btn btn-primary']) ?>
+                <?= Html::submitButton(Yii::t('app', 'Send'), ['class' => 'btn btn-primary']) ?>
             </div>
 
             <?php ActiveForm::end(); ?>

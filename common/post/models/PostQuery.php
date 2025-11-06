@@ -4,6 +4,11 @@ namespace app\common\post\models;
 
 class PostQuery extends \yii\db\ActiveQuery
 {
+    public function byUniqueId(string $id): self
+    {
+        return $this->andWhere(['unique_id' => $id]);
+    }
+
     public function byEmail(string $email): self
     {
         return $this->andWhere(['email' => $email]);

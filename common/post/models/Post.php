@@ -2,6 +2,7 @@
 
 namespace app\common\post\models;
 
+use Carbon\Carbon;
 use app\behaviors\TimestampBehavior;
 
 /**
@@ -28,6 +29,22 @@ class Post extends \yii\db\ActiveRecord
     public function isArchived(): bool
     {
         return $this->status === self::STATUS_ARCHIVED;
+    }
+
+    public function canUpdate(): bool
+    {
+        $now = Carbon::now('utc');
+        $date = Carbon::createFromTimestamp($this->created_at, 'utc');
+
+        return $this->isPublished() && $date->diffInHours($now) < 12;
+    }
+
+    public function canDelete(): bool
+    {
+        $now = Carbon::now('utc');
+        $date = Carbon::createFromTimestamp($this->created_at, 'utc');
+
+        return $this->isPublished() && $date->diffInDays($now) < 14;
     }
 
     public static function find(): PostQuery

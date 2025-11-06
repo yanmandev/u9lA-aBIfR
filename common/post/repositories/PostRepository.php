@@ -7,6 +7,15 @@ use app\common\post\models\Post;
 class PostRepository
 {
     /**
+     * @param string $id
+     * @return Post|null
+     */
+    public function getPostById(string $id): ?Post
+    {
+        return Post::find()->byUniqueId($id)->one();
+    }
+
+    /**
      * @param int $limit
      * @return Post[]
      */

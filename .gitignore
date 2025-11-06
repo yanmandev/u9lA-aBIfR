@@ -33,3 +33,6 @@ tests/_support/_generated
 /.vagrant
 
 .env
+
+# php-cs-fixer
+.php-cs-fixer.cache

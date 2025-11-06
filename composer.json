@@ -33,7 +33,8 @@
         "codeception/module-asserts": "^3.0 || ^1.1",
         "codeception/module-yii2": "^1.1",
         "codeception/module-filesystem": "^3.0 || ^2.0 || ^1.1",
-        "codeception/verify": "^3.0 || ^2.2"
+        "codeception/verify": "^3.0 || ^2.2",
+        "friendsofphp/php-cs-fixer": "^3.89"
     },
     "config": {
         "allow-plugins": {
@@ -51,7 +52,9 @@
         "post-create-project-cmd": [
             "yii\\composer\\Installer::postCreateProject",
             "yii\\composer\\Installer::postInstall"
-        ]
+        ],
+        "style:check": "php -d memory_limit=-1 vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "style:fix": "php -d memory_limit=-1 vendor/bin/php-cs-fixer fix"
     },
     "extra": {
         "yii\\composer\\Installer::postCreateProject": {

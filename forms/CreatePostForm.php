@@ -64,7 +64,6 @@ class CreatePostForm extends Model
                 $secondsLeft = 180 - $date->diffInSeconds($now);
 
                 $this->addError($attribute, t('app', "The message can be sent in {$secondsLeft} seconds."));
-                return;
             }
         }
     }
